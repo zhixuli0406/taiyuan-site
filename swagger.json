@@ -1,0 +1,4954 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Taiyuan API",
+    "version": "1.0.0",
+    "description": "Taiyuan 電子商務平台 API 文檔"
+  },
+  "servers": [
+    {
+      "url": "https://api.taiyuan.dudustudio.monster"
+    }
+  ],
+  "paths": {
+    "/admin/login": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "管理員登入",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登入成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "$ref": "#/components/schemas/Admin"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "無效的電子郵件或密碼"
+          }
+        }
+      }
+    },
+    "/admin": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "創建新管理員",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "name",
+                  "role"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "super_admin",
+                      "admin"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "管理員創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "$ref": "#/components/schemas/Admin"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "無效的角色或其他錯誤"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "獲取管理員列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取管理員列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "admins": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Admin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/{id}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "更新管理員資料",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "管理員的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "super_admin",
+                      "admin"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "管理員更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "$ref": "#/components/schemas/Admin"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "管理員未找到"
+          }
+        }
+      }
+    },
+    "/analytics/overview": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "獲取概覽統計數據",
+        "responses": {
+          "200": {
+            "description": "成功獲取概覽數據",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalRevenue": {
+                      "type": "number",
+                      "description": "總銷售額"
+                    },
+                    "totalOrders": {
+                      "type": "number",
+                      "description": "總訂單數"
+                    },
+                    "totalProductsSold": {
+                      "type": "number",
+                      "description": "總售出產品數"
+                    },
+                    "averageOrderValue": {
+                      "type": "number",
+                      "description": "平均訂單金額 (AOV)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/analytics/sales": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "獲取銷售數據",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "開始日期 (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "description": "結束日期 (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取銷售數據",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "dailyRevenue": {
+                        "type": "number"
+                      },
+                      "dailyOrders": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/analytics/status": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "獲取訂單狀態統計",
+        "responses": {
+          "200": {
+            "description": "成功獲取訂單狀態統計",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/analytics/top-products": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "獲取銷售量最高的產品",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "返回的產品數量限制",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取銷售量最高的產品",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "totalQuantity": {
+                        "type": "number"
+                      },
+                      "totalRevenue": {
+                        "type": "number"
+                      },
+                      "productDetails": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": "// 这里可以添加产品详细信息的属性"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/analytics/sales-by-category": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "依產品類別獲取銷售數據",
+        "responses": {
+          "200": {
+            "description": "成功獲取依類別分的銷售數據",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "產品類別名稱"
+                      },
+                      "totalRevenue": {
+                        "type": "number",
+                        "description": "該類別總銷售額"
+                      },
+                      "totalQuantity": {
+                        "type": "number",
+                        "description": "該類別總銷售數量"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/analytics/revenue-per-customer": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "依顧客獲取收益數據",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "返回的顧客數量限制 (預設 20)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取依顧客分的收益數據",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "顧客 ID"
+                      },
+                      "totalRevenue": {
+                        "type": "number",
+                        "description": "該顧客總消費金額"
+                      },
+                      "totalOrders": {
+                        "type": "number",
+                        "description": "該顧客總訂單數"
+                      },
+                      "customerInfo": {
+                        "type": "object",
+                        "description": "顧客詳細資訊 (如果找到的話)",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "通过 Auth0 登录获取用户信息",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功，返回 JWT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "无效的登录凭证"
+          },
+          "404": {
+            "description": "用户未找到"
+          }
+        }
+      }
+    },
+    "/carousel": {
+      "post": {
+        "tags": [
+          "Carousels"
+        ],
+        "summary": "創建新的輪播圖",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "image"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "輪播圖標題"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "輪播圖描述"
+                  },
+                  "link": {
+                    "type": "string",
+                    "description": "輪播圖連結"
+                  },
+                  "order": {
+                    "type": "number",
+                    "description": "顯示順序"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "Base64 格式的圖片"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "輪播圖創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "carousel": {
+                      "$ref": "#/components/schemas/Carousel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "請求參數錯誤"
+          }
+        }
+      }
+    },
+    "/carousels": {
+      "get": {
+        "tags": [
+          "Carousels"
+        ],
+        "summary": "獲取所有輪播圖列表",
+        "responses": {
+          "200": {
+            "description": "成功獲取輪播圖列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "carousels": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Carousel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carousel/{id}": {
+      "put": {
+        "tags": [
+          "Carousels"
+        ],
+        "summary": "更新輪播圖",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "輪播圖的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "輪播圖標題"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "輪播圖描述"
+                  },
+                  "link": {
+                    "type": "string",
+                    "description": "輪播圖連結"
+                  },
+                  "order": {
+                    "type": "number",
+                    "description": "顯示順序"
+                  },
+                  "isActive": {
+                    "type": "boolean",
+                    "description": "是否啟用"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "輪播圖更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "carousel": {
+                      "$ref": "#/components/schemas/Carousel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "輪播圖未找到"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Carousels"
+        ],
+        "summary": "刪除輪播圖",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "輪播圖的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "輪播圖刪除成功"
+          },
+          "404": {
+            "description": "輪播圖未找到"
+          }
+        }
+      }
+    },
+    "/carousel/presigned-url": {
+      "get": {
+        "tags": [
+          "Carousels"
+        ],
+        "summary": "獲取輪播圖上傳用的預簽名 URL",
+        "description": "生成用於直接上傳圖片到 S3 的預簽名 URL。\n注意：上傳時需要包含返回的 headers。\n",
+        "parameters": [
+          {
+            "name": "fileType",
+            "in": "query",
+            "required": true,
+            "description": "文件類型，必須是 .jpg、.jpeg、.png 或 .gif",
+            "schema": {
+              "type": "string",
+              "enum": [
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".gif"
+              ],
+              "example": ".jpg"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取預簽名 URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "description": "用於上傳的預簽名 URL",
+                      "example": "https://s3.amazonaws.com/bucket/..."
+                    },
+                    "imageUrl": {
+                      "type": "string",
+                      "description": "上傳完成後的圖片訪問 URL",
+                      "example": "https://cdn.example.com/carousels/image.jpg"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "上傳時需要的 headers",
+                      "properties": {
+                        "Content-Type": {
+                          "type": "string",
+                          "example": "image/jpeg"
+                        },
+                        "x-amz-acl": {
+                          "type": "string",
+                          "example": "public-read"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的文件類型",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "不支持的文件類型"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "生成預簽名 URL 失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "生成預簽名 URL 失敗"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "获取当前用户的购物车",
+        "responses": {
+          "200": {
+            "description": "成功获取购物车",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cart": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "customFields": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "购物车未找到"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "添加产品到购物车",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number"
+                  },
+                  "customFields": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "产品成功添加到购物车",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "cart": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "customFields": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误"
+          },
+          "404": {
+            "description": "产品未找到"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "更新购物车中的产品数量",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "产品数量更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "cart": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "customFields": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误"
+          },
+          "404": {
+            "description": "购物车未找到或产品不在购物车中"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "清空购物车",
+        "responses": {
+          "200": {
+            "description": "购物车已清空",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "cart": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "customFields": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/{productId}": {
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "移除购物车中的产品",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "产品的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "产品成功移除"
+          },
+          "400": {
+            "description": "请求参数错误"
+          },
+          "404": {
+            "description": "购物车未找到或产品不在购物车中"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "獲取分類列表",
+        "responses": {
+          "200": {
+            "description": "成功獲取分類列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "新增分類",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "parentCategory": {
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "order": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "成功創建分類",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "根據 ID 獲取單一分類",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "分類的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取分類",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "分類未找到"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "更新分類",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "分類的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "parentCategory": {
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "order": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功更新分類",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "分類未找到"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "刪除分類",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "分類的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "成功刪除分類"
+          },
+          "404": {
+            "description": "分類未找到"
+          }
+        }
+      }
+    },
+    "/coupons": {
+      "post": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "創建折價券",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code",
+                  "type",
+                  "value"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "fixed",
+                      "percentage"
+                    ]
+                  },
+                  "value": {
+                    "type": "number"
+                  },
+                  "minPurchase": {
+                    "type": "number"
+                  },
+                  "maxDiscount": {
+                    "type": "number"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "usageLimit": {
+                    "type": "number"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "applicableToProducts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "applicableToCategories": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "折價券創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "coupon": {
+                      "$ref": "#/components/schemas/Coupon"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "請求參數錯誤",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "獲取所有折價券",
+        "responses": {
+          "200": {
+            "description": "成功獲取折價券列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "coupons": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Coupon"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coupons/verify": {
+      "post": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "驗證及使用折價券",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code",
+                  "amount"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "折價券驗證成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "discount": {
+                      "type": "number"
+                    },
+                    "coupon": {
+                      "$ref": "#/components/schemas/Coupon"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "折價券無效或不適用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "折價券未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coupons/{id}": {
+      "put": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "更新折價券",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "折價券的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "fixed",
+                      "percentage"
+                    ]
+                  },
+                  "value": {
+                    "type": "number"
+                  },
+                  "minPurchase": {
+                    "type": "number"
+                  },
+                  "maxDiscount": {
+                    "type": "number"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "usageLimit": {
+                    "type": "number"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "applicableToProducts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "applicableToCategories": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "折價券更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "coupon": {
+                      "$ref": "#/components/schemas/Coupon"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "請求參數錯誤",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "折價券未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "刪除折價券",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "折價券的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "折價券刪除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "折價券未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coupons/{id}/disable": {
+      "put": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "禁用折價券",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "折價券的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "折價券禁用成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "coupon": {
+                      "$ref": "#/components/schemas/Coupon"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "折價券未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coupons/{id}/enable": {
+      "put": {
+        "tags": [
+          "Coupons"
+        ],
+        "summary": "啟用折價券",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "折價券的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "折價券啟用成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "coupon": {
+                      "$ref": "#/components/schemas/Coupon"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "折價券未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "獲取客戶列表",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "分頁頁碼"
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "每頁數量"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取客戶列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "user_id": {
+                            "type": "string",
+                            "description": "Auth0 用戶ID"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "email_verified": {
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "nickname": {
+                            "type": "string"
+                          },
+                          "picture": {
+                            "type": "string"
+                          },
+                          "identities": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "access_token": {
+                                  "type": "string"
+                                },
+                                "connection": {
+                                  "type": "string"
+                                },
+                                "user_id": {
+                                  "type": "string"
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "isSocial": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          },
+                          "family_name": {
+                            "type": "string"
+                          },
+                          "given_name": {
+                            "type": "string"
+                          },
+                          "statusMessage": {
+                            "type": "string"
+                          },
+                          "last_login": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "last_ip": {
+                            "type": "string"
+                          },
+                          "logins_count": {
+                            "type": "integer"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "總用戶數"
+                    },
+                    "page": {
+                      "type": "integer",
+                      "description": "當前頁碼"
+                    },
+                    "per_page": {
+                      "type": "integer",
+                      "description": "每頁數量"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "權限不足"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "創建新客戶",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "客戶創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "請求參數錯誤"
+          },
+          "403": {
+            "description": "權限不足"
+          }
+        }
+      }
+    },
+    "/customers/sync": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "同步 Auth0 用戶到本地資料庫",
+        "responses": {
+          "200": {
+            "description": "同步成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "用戶同步完成"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "同步的用戶數量"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "權限不足"
+          },
+          "500": {
+            "description": "同步失敗"
+          }
+        }
+      }
+    },
+    "/customers/me": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "獲取當前登入客戶信息",
+        "responses": {
+          "200": {
+            "description": "成功獲取客戶信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "email_verified": {
+                          "type": "boolean"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nickname": {
+                          "type": "string"
+                        },
+                        "picture": {
+                          "type": "string"
+                        },
+                        "identities": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "access_token": {
+                                "type": "string"
+                              },
+                              "connection": {
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "type": "string"
+                              },
+                              "provider": {
+                                "type": "string"
+                              },
+                              "isSocial": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        },
+                        "statusMessage": {
+                          "type": "string"
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未經授權"
+          },
+          "404": {
+            "description": "用戶不存在"
+          }
+        }
+      }
+    },
+    "/images/presigned-url": {
+      "get": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "獲取圖片上傳用的預簽名 URL",
+        "description": "生成用於直接上傳圖片到 S3 的預簽名 URL",
+        "parameters": [
+          {
+            "name": "fileType",
+            "in": "query",
+            "required": true,
+            "description": "文件類型，必須是 .jpg、.jpeg、.png 或 .gif",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取預簽名 URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "description": "用於上傳的預簽名 URL"
+                    },
+                    "imageUrl": {
+                      "type": "string",
+                      "description": "上傳完成後的圖片訪問 URL"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "上傳時需要的 headers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的文件類型",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "不支持的文件類型"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "生成預簽名 URL 失敗"
+          }
+        }
+      }
+    },
+    "/images": {
+      "get": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "獲取圖片列表",
+        "description": "從 S3 獲取所有圖片並返回 CloudFront URL，無需驗證狀態",
+        "responses": {
+          "200": {
+            "description": "成功獲取圖片列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "images": {
+                      "type": "array",
+                      "description": "圖片列表",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "description": "圖片的 CloudFront URL",
+                            "example": "https://cdn.example.com/images/example.jpg"
+                          },
+                          "key": {
+                            "type": "string",
+                            "description": "圖片在 S3 中的 key",
+                            "example": "images/example.jpg"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "錯誤信息",
+                      "example": "獲取圖片列表失敗"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/{key}": {
+      "delete": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "刪除圖片",
+        "description": "從 S3 中刪除指定圖片。\n在刪除之前會檢查該圖片是否被其他資料庫（如產品、輪播圖、商店設置等）使用。\n如果圖片正在被使用，將返回錯誤信息並列出使用該圖片的資料庫。\n",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "description": "圖片在 S3 中的 key，例如 'images/example.jpg'",
+            "schema": {
+              "type": "string",
+              "example": "images/example.jpg"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "圖片刪除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "成功消息",
+                      "example": "圖片刪除成功"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "圖片正在被使用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "錯誤信息",
+                      "example": "圖片正在被使用，無法刪除"
+                    },
+                    "usedBy": {
+                      "type": "array",
+                      "description": "使用該圖片的資料庫列表",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "products",
+                          "carousels",
+                          "storeSettings"
+                        ]
+                      },
+                      "example": [
+                        "products",
+                        "carousels"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "圖片未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "錯誤信息",
+                      "example": "圖片未找到"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "錯誤信息",
+                      "example": "刪除圖片失敗"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/{id}": {
+      "put": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "更新圖片信息",
+        "description": "更新圖片的標題和描述",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "圖片的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "圖片標題"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "圖片描述"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "圖片更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Image updated successfully"
+                    },
+                    "image": {
+                      "$ref": "#/components/schemas/Image"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "圖片未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Image not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "创建库存",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number"
+                  },
+                  "safeStock": {
+                    "type": "number"
+                  },
+                  "warehouse": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "库存创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "inventory": {
+                      "type": "object",
+                      "properties": {
+                        "product": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "safeStock": {
+                          "type": "number"
+                        },
+                        "warehouse": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "产品未找到"
+          }
+        }
+      }
+    },
+    "/inventory/{id}": {
+      "put": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "更新库存数量",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "库存的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantityChange": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "库存更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "inventory": {
+                      "type": "object",
+                      "properties": {
+                        "product": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "库存不足或请求参数错误"
+          },
+          "404": {
+            "description": "库存未找到"
+          }
+        }
+      }
+    },
+    "/inventory/{productId}": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "查询库存状态",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "产品的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取库存状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "inventories": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "product": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "number"
+                          },
+                          "safeStock": {
+                            "type": "number"
+                          },
+                          "warehouse": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到该产品的库存"
+          }
+        }
+      }
+    },
+    "/inventory/low-stock": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "查询低库存商品",
+        "responses": {
+          "200": {
+            "description": "成功获取低库存商品",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lowStockItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "product": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "number"
+                          },
+                          "safeStock": {
+                            "type": "number"
+                          },
+                          "warehouse": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory/reset/{productId}": {
+      "put": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "重置库存",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "产品的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "库存重置成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "inventory": {
+                      "type": "object",
+                      "properties": {
+                        "product": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到该产品的库存"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "創建訂單",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId",
+                  "items",
+                  "shippingMethod",
+                  "receiverInfo"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "用戶ID"
+                  },
+                  "items": {
+                    "type": "array",
+                    "description": "訂單商品列表",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "product": {
+                          "type": "string",
+                          "description": "商品ID"
+                        },
+                        "quantity": {
+                          "type": "number",
+                          "description": "購買數量"
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "商品單價"
+                        }
+                      }
+                    }
+                  },
+                  "shippingMethod": {
+                    "type": "string",
+                    "enum": [
+                      "CVS",
+                      "HOME"
+                    ],
+                    "description": "配送方式 (CVS=超商取貨, HOME=宅配)"
+                  },
+                  "receiverInfo": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "phone",
+                      "email"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "收件人姓名"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "收件人電話"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "收件人Email"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "收件地址(宅配必填)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "訂單創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "order": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "user": {
+                          "type": "string"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "price": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        },
+                        "totalAmount": {
+                          "type": "number"
+                        },
+                        "shippingMethod": {
+                          "type": "string"
+                        },
+                        "logistics": {
+                          "type": "object",
+                          "properties": {
+                            "ReceiverName": {
+                              "type": "string"
+                            },
+                            "ReceiverPhone": {
+                              "type": "string"
+                            },
+                            "ReceiverEmail": {
+                              "type": "string"
+                            },
+                            "ReceiverAddress": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "payment": {
+                          "type": "object",
+                          "properties": {
+                            "MerchantTradeNo": {
+                              "type": "string"
+                            },
+                            "TradeDesc": {
+                              "type": "string"
+                            },
+                            "TradeDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "paymentForm": {
+                      "type": "string",
+                      "description": "綠界支付表單 HTML"
+                    },
+                    "logisticsForm": {
+                      "type": "string",
+                      "description": "綠界物流選擇表單 HTML (僅超商取貨時提供)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "請求參數錯誤"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "獲取所有訂單 (需要管理員權限)",
+        "responses": {
+          "200": {
+            "description": "成功獲取所有訂單",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "orders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "product": {
+                                  "type": "string"
+                                },
+                                "quantity": {
+                                  "type": "number"
+                                },
+                                "price": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "totalAmount": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "logistics": {
+                            "type": "object"
+                          },
+                          "payment": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "totalOrders": {
+                          "type": "number",
+                          "description": "總訂單數"
+                        },
+                        "pendingOrders": {
+                          "type": "number",
+                          "description": "待處理訂單數"
+                        },
+                        "completedOrders": {
+                          "type": "number",
+                          "description": "已完成訂單數"
+                        },
+                        "totalRevenue": {
+                          "type": "number",
+                          "description": "總營收（僅計算已完成訂單）"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "權限不足"
+          }
+        }
+      }
+    },
+    "/orders/payment/callback": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "綠界支付回調",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "MerchantTradeNo": {
+                    "type": "string"
+                  },
+                  "PaymentDate": {
+                    "type": "string"
+                  },
+                  "PaymentType": {
+                    "type": "string"
+                  },
+                  "PaymentTypeChargeFee": {
+                    "type": "string"
+                  },
+                  "SimulatePaid": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回調處理成功",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "1|OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/logistics/callback": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "綠界物流回調",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "MerchantTradeNo": {
+                    "type": "string"
+                  },
+                  "LogisticsType": {
+                    "type": "string"
+                  },
+                  "LogisticsSubType": {
+                    "type": "string"
+                  },
+                  "CVSStoreID": {
+                    "type": "string"
+                  },
+                  "CVSStoreName": {
+                    "type": "string"
+                  },
+                  "CVSAddress": {
+                    "type": "string"
+                  },
+                  "CVSTelephone": {
+                    "type": "string"
+                  },
+                  "LogisticsStatus": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回調處理成功",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "1|OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/my-orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "查詢用戶訂單",
+        "responses": {
+          "200": {
+            "description": "成功獲取用戶訂單",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "orders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "user": {
+                            "type": "string"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "product": {
+                                  "type": "string"
+                                },
+                                "quantity": {
+                                  "type": "number"
+                                },
+                                "price": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "totalAmount": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "Pending",
+                              "Paid",
+                              "Shipped",
+                              "Completed",
+                              "Cancelled"
+                            ]
+                          },
+                          "shippingMethod": {
+                            "type": "string",
+                            "enum": [
+                              "CVS",
+                              "HOME"
+                            ]
+                          },
+                          "logistics": {
+                            "type": "object",
+                            "properties": {
+                              "LogisticsStatus": {
+                                "type": "string"
+                              },
+                              "CVSStoreName": {
+                                "type": "string"
+                              },
+                              "CVSAddress": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "payment": {
+                            "type": "object",
+                            "properties": {
+                              "isPaid": {
+                                "type": "boolean"
+                              },
+                              "PaymentType": {
+                                "type": "string"
+                              },
+                              "PaymentDate": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到訂單"
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "更新訂單狀態",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "訂單的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "trackingNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "訂單更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "order": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "type": "string"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "number"
+                              },
+                              "price": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        },
+                        "totalAmount": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "訂單未找到"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "刪除訂單 (取消)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "訂單的 ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "訂單取消成功"
+          },
+          "400": {
+            "description": "不能取消非待處理訂單"
+          },
+          "404": {
+            "description": "訂單未找到"
+          }
+        }
+      }
+    },
+    "/products/presigned-url": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "獲取產品圖片上傳用的預簽名 URL",
+        "parameters": [
+          {
+            "name": "fileType",
+            "in": "query",
+            "required": true,
+            "description": "文件類型 (.jpg, .png, .gif)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取預簽名 URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string"
+                    },
+                    "imageUrl": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的文件類型"
+          },
+          "500": {
+            "description": "生成預簽名 URL 失敗"
+          }
+        }
+      }
+    },
+    "/products": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "創建產品",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "category"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "商品名稱"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "商品描述"
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "基本價格"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "分類ID"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "圖片URL列表"
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Variant"
+                    }
+                  },
+                  "isCustomizable": {
+                    "type": "boolean",
+                    "description": "是否支持客製化"
+                  },
+                  "customizableFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "stock": {
+                    "type": "number",
+                    "description": "總庫存"
+                  },
+                  "transport": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "支持的運輸方式ID列表"
+                  },
+                  "isFeatured": {
+                    "type": "boolean",
+                    "description": "是否為熱門商品"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "產品創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "product": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "分類未找到"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "獲取產品列表",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "頁碼",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每頁產品數量",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "分類ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "產品名稱搜索",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取產品列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "獲取單個產品",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取產品",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品未找到"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "更新產品",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "newImages": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Variant"
+                    }
+                  },
+                  "isCustomizable": {
+                    "type": "boolean"
+                  },
+                  "customizableFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "stock": {
+                    "type": "number"
+                  },
+                  "transport": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "isFeatured": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "產品更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "product": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品未找到"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "刪除產品",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "產品刪除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品未找到"
+          }
+        }
+      }
+    },
+    "/products/{id}/transport": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "添加運輸方式到產品",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "transportId"
+                ],
+                "properties": {
+                  "transportId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "運輸方式添加成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品或運輸方式未找到"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "獲取產品的所有運輸方式",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取運輸方式列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transport": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transport"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品未找到"
+          }
+        }
+      }
+    },
+    "/products/{id}/transport/{transportId}": {
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "從產品中移除運輸方式",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "運輸方式移除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "產品或運輸方式未找到"
+          }
+        }
+      }
+    },
+    "/store-settings": {
+      "get": {
+        "tags": [
+          "StoreSetting"
+        ],
+        "summary": "讀取商店設置",
+        "description": "獲取商店的所有設置信息",
+        "responses": {
+          "200": {
+            "description": "成功獲取商店設置",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreSetting"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商店設置未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "商店設置未找到"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Store Settings"
+        ],
+        "summary": "更新商店設置",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "商店設置更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "settings": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商店設置未找到"
+          },
+          "500": {
+            "description": "伺服器錯誤"
+          }
+        }
+      }
+    },
+    "/store-settings/logo/presigned-url": {
+      "get": {
+        "tags": [
+          "Store Settings"
+        ],
+        "summary": "獲取商店 Logo 上傳用的預簽名 URL",
+        "description": "生成用於直接上傳圖片到 S3 的預簽名 URL。\n注意：上傳時需要包含返回的 headers。\n",
+        "parameters": [
+          {
+            "name": "fileType",
+            "in": "query",
+            "required": true,
+            "description": "文件類型，必須是 .jpg、.jpeg、.png 或 .gif",
+            "schema": {
+              "type": "string",
+              "enum": [
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".gif"
+              ],
+              "example": ".jpg"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取預簽名 URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "description": "用於上傳的預簽名 URL",
+                      "example": "https://s3.amazonaws.com/bucket/..."
+                    },
+                    "imageUrl": {
+                      "type": "string",
+                      "description": "上傳完成後的圖片訪問 URL",
+                      "example": "https://cdn.example.com/logos/image.jpg"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "上傳時需要的 headers",
+                      "properties": {
+                        "Content-Type": {
+                          "type": "string",
+                          "example": "image/jpeg"
+                        },
+                        "x-amz-acl": {
+                          "type": "string",
+                          "example": "public-read"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "不支持的文件類型",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "不支持的文件類型"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "生成預簽名 URL 失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "生成預簽名 URL 失敗"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store-settings/logo": {
+      "put": {
+        "tags": [
+          "Store Settings"
+        ],
+        "summary": "更新商店 Logo",
+        "description": "使用已上傳到 S3 的圖片 URL 更新商店 Logo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "imageUrl"
+                ],
+                "properties": {
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "已上傳到 S3 的圖片 URL",
+                    "example": "https://cdn.example.com/logos/image.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logo 更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logo updated successfully"
+                    },
+                    "logo": {
+                      "type": "string",
+                      "description": "更新後的 Logo URL",
+                      "example": "https://cdn.example.com/logos/image.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "無效的圖片 URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "無效的圖片 URL"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商店設置未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "商店設置未找到"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transports": {
+      "post": {
+        "tags": [
+          "Transport"
+        ],
+        "summary": "創建運輸方式",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "fee"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "運輸方式名稱"
+                  },
+                  "fee": {
+                    "type": "number",
+                    "description": "運輸費用"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "運輸方式描述"
+                  },
+                  "estimatedDays": {
+                    "type": "number",
+                    "description": "預計運輸天數"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "運輸方式創建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "transport": {
+                      "$ref": "#/components/schemas/Transport"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Transport"
+        ],
+        "summary": "獲取所有運輸方式",
+        "parameters": [
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "是否只獲取啟用的運輸方式",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取運輸方式列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transports": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transport"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transports/{id}": {
+      "get": {
+        "tags": [
+          "Transport"
+        ],
+        "summary": "獲取單個運輸方式",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功獲取運輸方式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transport": {
+                      "$ref": "#/components/schemas/Transport"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "運輸方式未找到"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transport"
+        ],
+        "summary": "更新運輸方式",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "fee": {
+                    "type": "number"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "estimatedDays": {
+                    "type": "number"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "運輸方式更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "transport": {
+                      "$ref": "#/components/schemas/Transport"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "運輸方式未找到"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transport"
+        ],
+        "summary": "刪除運輸方式",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "運輸方式刪除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "運輸方式未找到"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Carousel": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "parentCategory": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "order": {
+            "type": "number"
+          }
+        }
+      },
+      "Coupon": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "percentage"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "minPurchase": {
+            "type": "number"
+          },
+          "maxDiscount": {
+            "type": "number"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usageLimit": {
+            "type": "number"
+          },
+          "usedCount": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "applicableToProducts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "applicableToCategories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Image": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "圖片的 CloudFront URL"
+          },
+          "key": {
+            "type": "string",
+            "description": "圖片在 S3 中的 key"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Variant"
+            }
+          },
+          "isCustomizable": {
+            "type": "boolean"
+          },
+          "customizableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "stock": {
+            "type": "number"
+          },
+          "transport": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "fee": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "isFeatured": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Variant": {
+        "type": "object",
+        "required": [
+          "name",
+          "price",
+          "quantity"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "屬性名稱（例如顏色、尺碼）"
+          },
+          "price": {
+            "type": "number",
+            "description": "專屬價格"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "專屬庫存"
+          }
+        }
+      },
+      "StoreSetting": {
+        "type": "object",
+        "properties": {
+          "storeName": {
+            "type": "string",
+            "description": "商店名稱"
+          },
+          "description": {
+            "type": "string",
+            "description": "商店描述"
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "description": "聯繫電話"
+              },
+              "email": {
+                "type": "string",
+                "description": "聯繫郵箱"
+              }
+            }
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "國家"
+              },
+              "city": {
+                "type": "string",
+                "description": "城市"
+              },
+              "district": {
+                "type": "string",
+                "description": "行政區"
+              },
+              "addressLine": {
+                "type": "string",
+                "description": "詳細地址"
+              },
+              "postalCode": {
+                "type": "string",
+                "description": "郵遞區號"
+              }
+            }
+          },
+          "businessHours": {
+            "type": "object",
+            "properties": {
+              "openTime": {
+                "type": "string"
+              },
+              "closeTime": {
+                "type": "string"
+              }
+            }
+          },
+          "branding": {
+            "type": "object",
+            "properties": {
+              "logoUrl": {
+                "type": "string",
+                "description": "商店 Logo URL"
+              },
+              "primaryColor": {
+                "type": "string",
+                "description": "主色調"
+              }
+            }
+          },
+          "socialMedia": {
+            "type": "object",
+            "properties": {
+              "facebook": {
+                "type": "string",
+                "description": "Facebook 連結"
+              },
+              "line": {
+                "type": "string",
+                "description": "Line 連結"
+              },
+              "x": {
+                "type": "string",
+                "description": "X (Twitter) 連結"
+              },
+              "instagram": {
+                "type": "string",
+                "description": "Instagram 連結"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "創建時間"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "更新時間"
+          }
+        }
+      },
+      "Transport": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "estimatedDays": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdBy": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "updatedBy": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Admin",
+      "description": "管理員的 API"
+    },
+    {
+      "name": "Analytics",
+      "description": "分析數據的 API"
+    },
+    {
+      "name": "Auth",
+      "description": "用户认证的 API"
+    },
+    {
+      "name": "Carousels",
+      "description": "輪播圖管理的 API"
+    },
+    {
+      "name": "Cart",
+      "description": "购物车管理的 API"
+    },
+    {
+      "name": "Categories",
+      "description": "管理分類的 API"
+    },
+    {
+      "name": "Coupons",
+      "description": "折價券管理的 API"
+    },
+    {
+      "name": "Customers",
+      "description": "客戶管理的 API"
+    },
+    {
+      "name": "Images",
+      "description": "圖片管理 API"
+    },
+    {
+      "name": "Inventory",
+      "description": "库存管理的 API"
+    },
+    {
+      "name": "Orders",
+      "description": "訂單管理的 API"
+    },
+    {
+      "name": "Products",
+      "description": "產品管理 API"
+    },
+    {
+      "name": "StoreSetting",
+      "description": "商店設置管理 API"
+    },
+    {
+      "name": "Transport",
+      "description": "運輸方式管理 API"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+/* src/components/LineChatFloatingButton.module.css */
+
+.container {
+  position: fixed;
+  bottom: 20px; /* Adjust as needed */
+  right: 20px;  /* Adjust as needed */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.chatButton {
+  background-color: #00B900; /* LINE green */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.chatButton:hover {
+  background-color: #009e00; /* Darker green */
+}
+
+.chatWindow {
+  position: absolute;
+  bottom: 80px; /* Position above the button */
+  right: 0;
+  width: 300px;
+  /* max-height: 400px; */ /* Optional: set a max height */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  visibility: hidden; /* Use visibility to prevent interaction when hidden */
+  display: flex;
+  flex-direction: column;
+}
+
+.chatWindow.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.chatHeader {
+  background-color: #f1f1f1;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+.chatBody {
+  padding: 15px;
+  text-align: center;
+  flex-grow: 1; /* Allow body to grow */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+}
+
+.chatBody p {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 14px;
+}
+
+.lineButton img {
+  display: block; /* Remove extra space below image */
+  margin: 0 auto; /* Center the button */
+}
+
+.qrCode {
+  margin-top: 15px;
+  max-width: 150px; /* Adjust size as needed */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+} 
